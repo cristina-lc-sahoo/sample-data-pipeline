@@ -20,5 +20,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2 # Make sure your actual S3 bucket says "Ohio" in AWS
 
-    - name: Sync File to S3
-      run: aws s3 cp ./data/users.csv s3://cristina-data-pipeline-bucket-2026/data/users.csv
+    - name: Sync File to S3 with Automated Timestamp
+      run: |
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        aws s3 cp ./data/users.csv s3://cristina-data-pipeline-bucket-2026/data/users_$TIMESTAMP.csv
