@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'data/users.csv' # Triggers only when this file is modified
+    workflow_dispatch: # Add this line to unlock the manual trigger button
 
 jobs:
   upload-to-azure:
