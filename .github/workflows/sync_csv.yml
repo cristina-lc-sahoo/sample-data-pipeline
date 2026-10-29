@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'data/users.csv' # Triggers only when this file is modified
-  workflow_dispatch: # Add this line to unlock the manual trigger button
+      - 'data/users.csv'
+  workflow_dispatch:
 
 jobs:
   upload-to-azure:
@@ -15,14 +15,14 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Upload CSV to Blob Storage
+    - name: Upload CSV directly to Azure Storage
       uses: azure/CLI@v2
       with:
         azcliversion: latest
         inlineScript: |
           az storage blob upload \
-            --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
-            --container-name "github-landing-zone" \
-            --file "data/users.csv" \
-            --name "users.csv" \
+            --connection-string '${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}' \
+            --container-name 'github-landing-zone' \
+            --file 'data/users.csv' \
+            --name 'users.csv' \
             --overwrite true
