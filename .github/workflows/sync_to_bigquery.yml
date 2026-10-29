@@ -1,0 +1,40 @@
+name: Sync CSV to BigQuery
+
+on:
+  push:
+    paths:
+      - 'data/users.csv'
+  workflow_dispatch:
+
+jobs:
+  load-to-bigquery:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/888312980400/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: github-pipeline@data-pipeline-demo-513107.iam.gserviceaccount.com
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Upload CSV to Cloud Storage
+        run: gcloud storage cp data/users.csv gs://bucket-quickstart_data-pipeline-demo-513107/users.csv
+
+      - name: Load into BigQuery
+        run: |
+          bq load \
+            --project_id=data-pipeline-demo-513107 \
+            --source_format=CSV \
+            --skip_leading_rows=1 \
+            --autodetect \
+            --replace \
+            analytics.users \
+            gs://bucket-quickstart_data-pipeline-demo-513107/users.csv
