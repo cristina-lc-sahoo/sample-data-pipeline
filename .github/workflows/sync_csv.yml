@@ -15,10 +15,16 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Upload CSV using Native Azure Action
+    - name: Upload CSV via Environment Variable
       uses: azure/CLI@v2
+      env:
+        AZURE_CONN: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
       with:
-        connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-        container-name: 'github-landing-zone'
-        file-path: 'data/users.csv'
-        blob-name: 'users.csv'
+        azcliversion: latest
+        inlineScript: |
+          az storage blob upload \
+            --connection-string "$AZURE_CONN" \
+            --container-name "github-landing-zone" \
+            --file "data/users.csv" \
+            --name "users.csv" \
+            --overwrite true
