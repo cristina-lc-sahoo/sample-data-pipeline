@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'data/users.csv' # Triggers only when this file is modified
-    workflow_dispatch: # Add this line to unlock the manual trigger button
+workflow_dispatch: # Add this line to unlock the manual trigger button
 
 jobs:
   upload-to-azure:
@@ -23,6 +23,6 @@ jobs:
           az storage blob upload \
             --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
             --container-name "github-landing-zone" \
-            --file "users.csv" \
+            --file "data/users.csv" \
             --name "users.csv" \
             --overwrite true
