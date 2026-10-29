@@ -1,0 +1,27 @@
+name: Sync CSV to Azure Storage
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'users.csv' # Triggers only when this file is modified
+
+jobs:
+  upload-to-azure:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Upload CSV to Blob Storage
+      uses: azure/CLI@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az storage blob upload \
+            --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+            --container-name "github-landing-zone" \
+            --file "users.csv" \
+            --name "users.csv" \
+            --overwrite true
