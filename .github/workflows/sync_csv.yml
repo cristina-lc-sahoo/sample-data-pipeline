@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'users.csv' # Triggers only when this file is modified
+      - 'data/users.csv' # Triggers only when this file is modified
 
 jobs:
   upload-to-azure:
